@@ -1,0 +1,12 @@
+name = "shop"
+description = "Simulation of a store with electronics"
+version = "0.1.0-dev"
+
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["mocnykarolek"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+executables = ["shop"]
