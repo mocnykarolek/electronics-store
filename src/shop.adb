@@ -20,6 +20,7 @@ procedure Shop is
    R1 : Robot_type(1);
    R2 : Robot_type(2);
    R3 : Robot_type(3);
+   R2 : Robot_type(4);
    
 
    Result: Integer := Add(3,5);
