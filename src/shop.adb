@@ -4,7 +4,8 @@ with tools;
 use tools;
 with robot;
 use robot;
-
+with delivery;
+use deliver;
 
 procedure Shop is
    type Dostawa is record
@@ -14,13 +15,13 @@ procedure Shop is
    end record;
 
    Dos: Dostawa;
-   
+   d1 : deliver_type;
    
 
    R1 : Robot_type(1);
    R2 : Robot_type(2);
    R3 : Robot_type(3);
-   R2 : Robot_type(4);
+   R4 : Robot_type(4);
    
 
    Result: Integer := Add(3,5);
