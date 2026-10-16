@@ -1,5 +1,5 @@
-package deliver is
+package delivery is
       
-      task type deliver_type;
+      task type delivery_type(Id: Integer);
 
-end deliver; 
+end delivery; 

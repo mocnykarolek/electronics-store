@@ -5,17 +5,15 @@ use tools;
 with robot;
 use robot;
 with delivery;
-use deliver;
+use delivery;
+with warehouse;
+with Types;
+
 
 procedure Shop is
-   type Dostawa is record
-      Id: Integer;
-      
+   
 
-   end record;
-
-   Dos: Dostawa;
-   d1 : deliver_type;
+   d1 : delivery_type(4);
    
 
    R1 : Robot_type(1);
@@ -24,13 +22,16 @@ procedure Shop is
    R4 : Robot_type(4);
    
 
-   Result: Integer := Add(3,5);
 begin
-   Dos.Id := 1;
-   Put_Line ("Test");
+
 
    
-   Print(Dos.Id);
+   delay 20.0;
 
-   null;
+   R1.EndRobot;
+   R2.EndRobot;
+   R3.EndRobot;
+   R4.EndRobot;
+
+   
 end Shop;

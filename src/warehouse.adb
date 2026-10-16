@@ -8,7 +8,7 @@ package body warehouse is
    
    begin
       loop
-
+         Put_Line ("test");
       accept pickup (Id : Integer; Ammount : Integer) do
          if Space_left - Ammount > 0 then
             Space_left := Space_left - Ammount;
