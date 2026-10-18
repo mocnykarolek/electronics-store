@@ -1,6 +1,7 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
-
+with Types;
+use type Types.Products_Type;
 
 package body warehouse is
    task body warehouse is
@@ -15,16 +16,16 @@ package body warehouse is
    warehouse_state_var : warehouse_state;
    Capacity : Integer := 50;
    Space_left : Integer := Capacity;
-
+   selected_type : Types.Products_Type;
 
 
    procedure print_warehouse_status is
    begin 
       Put_Line ("#####################################################################################################################################################");
-      Put_Line (" Produktów A jest : " & Integer'Image(warehouse_state_var.A_ammount) & " i zajmują " & Integer'Image(warehouse_state_var.A_ammount*1) & " miejsca.");
-      Put_Line (" Produktów B jest : " & Integer'Image(warehouse_state_var.B_ammount) & " i zajmują " & Integer'Image(warehouse_state_var.B_ammount*2) & " miejsca.");
-      Put_Line (" Produktów C jest : " & Integer'Image(warehouse_state_var.C_ammount) & " i zajmują " & Integer'Image(warehouse_state_var.C_ammount*3) & " miejsca.");
-      Put_Line (" Produktów D jest : " & Integer'Image(warehouse_state_var.D_ammount) & " i zajmują " & Integer'Image(warehouse_state_var.D_ammount*4) & " miejsca.");
+      Put_Line (" Produktow A jest : " & Integer'Image(warehouse_state_var.A_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.A_ammount*1) & " miejsca.");
+      Put_Line (" Produktow B jest : " & Integer'Image(warehouse_state_var.B_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.B_ammount*2) & " miejsca.");
+      Put_Line (" Produktow C jest : " & Integer'Image(warehouse_state_var.C_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.C_ammount*3) & " miejsca.");
+      Put_Line (" Produktow D jest : " & Integer'Image(warehouse_state_var.D_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.D_ammount*4) & " miejsca.");
       Put_Line ("#####################################################################################################################################################");
 
    end print_warehouse_status;
@@ -34,9 +35,9 @@ package body warehouse is
       loop
             select
                
-               accept pickup (dostawa: types.Dostawa) do
+               accept pickup (dostawa: types.Dostawa; retCode : out Integer ) do
                   if Space_left - dostawa.Ammount*dostawa.Capacity >= 0 then
-                     selected_type : Types.Products_Type;
+                     
                      if dostawa.DostawaType = 'A' then
                         selected_type := 'A';
                         warehouse_state_var.A_ammount := warehouse_state_var.A_ammount + dostawa.Ammount;
@@ -53,9 +54,11 @@ package body warehouse is
                      end if;
                      Space_left := Space_left - dostawa.Ammount*dostawa.Capacity;
 
-                     Put_Line ("Przyjeto: " & Integer'Image(dostawa.Ammount) & " produktów typu" & Types.Products_Type'Image(selected_type) & ". W magazynie zostało : " & Integer'Image(Space_left) & " miejsca.");
+                     Put_Line ("Przyjeto: " & Integer'Image(dostawa.Ammount) & " produktow typu" & Types.Products_Type'Image(selected_type) & ". W magazynie zostalo : " & Integer'Image(Space_left) & " miejsca.");
+                     retCode := 0;
                   else
-                     Put_Line("Brak miejsca na magazynie");
+                     Put_Line("Brak miejsca na magazynie. ZWROT");
+                     retCode :=1;
 
 
                   end if;

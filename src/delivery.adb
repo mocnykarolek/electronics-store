@@ -4,6 +4,8 @@ with robot;
 with Ada.Numerics.Discrete_Random;
 with Types;
 use Types;
+with manager;
+
 package body delivery is
       
 
@@ -58,6 +60,8 @@ package body delivery is
          loop
             random_time := Losowanie.Random(Gen);
             Put_Line ("Dostawa czeka");
+            --  pyta managera o wolnego robota
+            --  jezeli nie znajdzie to wtedy jest to komunikowane i produkt jest gubiony
             delay Duration(random_time);
 
 
