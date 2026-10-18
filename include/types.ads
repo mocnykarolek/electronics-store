@@ -1,11 +1,13 @@
 package Types is
 
-   type Products_Type is (A, B, C, D);
+   type Products_Type is ('A', 'B', 'C', 'D');
+   subtype p_ammount is Integer range 1 .. 5;
+
 
    type Dostawa is record
       
-      DostawaType : Character;
-      Ammount : Integer;
+      DostawaType : Products_Type;
+      Ammount : p_ammount;
       Capacity : Integer;
 
 

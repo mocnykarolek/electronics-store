@@ -1,14 +1,14 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
 with warehouse;
+with Types;
 
 
 package body robot is
       
 
       task body Robot_type is
-         CurrentProduct : Character;
-         ProductAmmount : Integer := 0;
+         current_product : Types.Dostawa;
       begin
          
          loop
@@ -29,7 +29,7 @@ package body robot is
 
                Put_Line ("Robot o id" & Integer'Image(Id) & "czeka na prace");
                
-               warehouse.warehouse.pickup (Id, 4);
+               --  warehouse.warehouse.pickup (Id, 4);
                
                
 

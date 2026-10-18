@@ -2,27 +2,43 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 with robot;
 with Ada.Numerics.Discrete_Random;
-with types;
+with Types;
+use Types;
 package body delivery is
       
 
-      task body delivery_type is
-         --  type generateinput is (RandomTime, RandomProduct, RandomAmmount);
+      task body delivery is
+         
 
-         function GenerateRandomProduct return  types.Dostawa is
+         function GenerateRandomProduct return Dostawa is
             
-            retVal : Types.Dostawa;
-
-            package RandInt is new Ada.Numerics.Discrete_Random(Integer);
-            package RandProd is new Ada.Numerics.Discrete_Random(Types.Products_Type);
+            retVal : Dostawa;
+            
+            package RandInt is new Ada.Numerics.Discrete_Random(p_ammount);
+            package RandProd is new Ada.Numerics.Discrete_Random(Products_Type);
 
             GenInt : RandInt.Generator;
             GenProd : RandProd.Generator;
 
             
             
-         begin
+         begin	
             
+            RandProd.Reset(GenProd);
+            RandInt.Reset(GenInt);
+
+            retval.DostawaType := RandProd.Random(GenProd);
+            retval.Ammount := RandInt.Random(GenInt);
+
+            if retval.DostawaType = 'A' then
+                  retVal.Capacity := 1;
+            elsif retval.DostawaType = 'B' then
+                  retVal.Capacity := 2;
+            elsif retval.DostawaType = 'C' then
+                  retVal.Capacity := 3;
+            elsif retval.DostawaType = 'D' then
+                  retVal.Capacity := 4;
+            end if;
 
             return retVal;
          end GenerateRandomProduct;
@@ -48,6 +64,6 @@ package body delivery is
          end loop;
          
 
-      end delivery_type;
+      end delivery;
 
 end delivery;

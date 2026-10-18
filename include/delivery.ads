@@ -1,5 +1,5 @@
 package delivery is
       
-      task type delivery_type(Id: Integer);
+      task delivery;
 
 end delivery; 

@@ -12,10 +12,6 @@ with Types;
 
 procedure Shop is
    
-
-   d1 : delivery_type(4);
-   
-
    R1 : Robot_type(1);
    R2 : Robot_type(2);
    R3 : Robot_type(3);
