@@ -3,7 +3,7 @@ use Ada.Text_IO;
 with robot;
 with Ada.Numerics.Discrete_Random;
 with Types;
-use Types;
+use type Types.Products_Type;
 with manager;
 
 package body delivery is
@@ -12,12 +12,12 @@ package body delivery is
       task body delivery is
          
 
-         function GenerateRandomProduct return Dostawa is
+         function GenerateRandomProduct return Types.Dostawa is
             
-            retVal : Dostawa;
+            retVal : Types.Dostawa;
             
-            package RandInt is new Ada.Numerics.Discrete_Random(p_ammount);
-            package RandProd is new Ada.Numerics.Discrete_Random(Products_Type);
+            package RandInt is new Ada.Numerics.Discrete_Random(Types.p_ammount);
+            package RandProd is new Ada.Numerics.Discrete_Random(Types.Products_Type);
 
             GenInt : RandInt.Generator;
             GenProd : RandProd.Generator;
@@ -54,12 +54,14 @@ package body delivery is
          
          random_time : random_time_range;
          Gen : Losowanie.Generator;
-
+         product : Types.Dostawa;
       begin
          Losowanie.Reset(Gen);
          loop
             random_time := Losowanie.Random(Gen);
+            product := GenerateRandomProduct;
             Put_Line ("Dostawa czeka");
+            manager.manager.Nowa_dostawa (product);
             --  pyta managera o wolnego robota
             --  jezeli nie znajdzie to wtedy jest to komunikowane i produkt jest gubiony
             delay Duration(random_time);

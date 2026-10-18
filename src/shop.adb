@@ -1,5 +1,7 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
+
+with manager;
 with tools;
 use tools;
 with robot;
@@ -10,12 +12,10 @@ with warehouse;
 with Types;
 
 
+
 procedure Shop is
    
-   R1 : Robot_type(1);
-   R2 : Robot_type(2);
-   R3 : Robot_type(3);
-   R4 : Robot_type(4);
+
    
 
 begin
@@ -24,10 +24,8 @@ begin
    
    delay 20.0;
 
-   R1.EndRobot;
-   R2.EndRobot;
-   R3.EndRobot;
-   R4.EndRobot;
+   manager.manager.Zakoncz;
+
 
    
 end Shop;
