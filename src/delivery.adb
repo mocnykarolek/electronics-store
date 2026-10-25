@@ -1,6 +1,5 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
-with robot;
 with Ada.Numerics.Discrete_Random;
 with Types;
 use type Types.Products_Type;
@@ -45,7 +44,7 @@ package body delivery is
             return retVal;
          end GenerateRandomProduct;
 
-         subtype random_time_range is Integer range 3 .. 6;
+         subtype random_time_range is Integer range 2 .. 4;
          
          
          

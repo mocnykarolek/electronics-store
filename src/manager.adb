@@ -11,13 +11,12 @@ package body manager is
       type robots_array_type is array (positive range <>) of robot_access;
       type Robot_Statuses_Array_Type is array (positive range <>) of Types.Robot_Status;
 
-      robots_array : robots_array_type(1 .. 4);
+      robots_array : robots_array_type(1 .. 3);
 
       akt_dostawa : Types.Dostawa;
-      robot_stats : Robot_Statuses_Array_Type(1 .. 4);
+      robot_stats : Robot_Statuses_Array_Type(1 .. 3);
+      Repair_ID : Integer := -1;
       begin
-            accept Start;
-
             for i in robots_array'Range loop
                robots_array(i) := new robot.Robot_type(Id => i);
                robot_stats(i) := Types.IDLE;
@@ -38,13 +37,20 @@ package body manager is
 
 
                or
-
                   accept Status(r_status : Types.Robot_Status; Id : Integer) do
+                     Repair_ID := -1;
                      robot_stats(Id) := r_status;
+                     if r_status = Types.CRASH then
+                        Repair_ID := Id;
+                     end if;
                   end Status;
+                  if Repair_ID /= -1 then
+                     robots_array(Repair_ID).naprawa;
+                  end if;
 
                or
                   accept Zakoncz;
+                  Put_Line ("koniec");
                   for i in robots_array'Range loop
                      robots_array(i).EndRobot;
                   end loop;

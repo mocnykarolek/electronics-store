@@ -19,8 +19,6 @@ procedure Shop is
    
 
 begin
-
-   manager.manager.Start;
    
    delay 20.0;
 

@@ -1,5 +1,6 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
+with Ada.Numerics.Discrete_Random;
 with warehouse;
 with Types;
 with manager;
@@ -10,7 +11,13 @@ package body robot is
       current_product : Types.Dostawa;
       current_robot_status : Types.Robot_Status := Types.IDLE;
       warehouse_return_code : Integer;
+      subtype random_crash_chance is Integer range 1 .. 7;
+      package Losowanie is new Ada.Numerics.Discrete_Random(random_crash_chance);
+      Gen : Losowanie.Generator;
+      x : random_crash_chance;
+      Flaga_Statusu : Boolean := false;
    begin
+      Losowanie.Reset(Gen);
       loop
          select
             when current_robot_status = Types.IDLE =>
@@ -29,16 +36,33 @@ package body robot is
                   delay 2.0;
                end if;
                current_robot_status := Types.IDLE;
+               x := losowanie.Random(Gen);
+               if x = 1 then
+                  Put_Line ("[R" & Integer'Image(Id) & "] ulegl awarii");
+                  current_robot_status := Types.CRASH;
+               end if;
+               Flaga_Statusu := True;
+         or
+            when current_robot_status = Types.CRASH =>
+               accept naprawa do
+                  current_robot_status := Types.IDLE;
+               end naprawa;
                manager.manager.Status (current_robot_status, Id);
+               delay 5.0;
+               Put_Line ("[R" & Integer'Image(Id) & "] zostal naprawiony");
          or
             delay 1.0;
-            Put_Line ("[R" & Integer'Image(Id) & "] czeka na prace");
+            Put_Line ("[R" & Integer'Image(Id) & "] czeka na dostawe");
          or
             accept EndRobot do
                Put_Line ("[R" & Integer'Image(Id) & "] zakonczyl dzialanie.");
             end EndRobot;
             exit;
          end select;
+         if Flaga_Statusu = True then
+            manager.manager.Status (current_robot_status, Id);
+            Flaga_Statusu := False;
+         end if;
       end loop;
    end Robot_type;
 
