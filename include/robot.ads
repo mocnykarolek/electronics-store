@@ -1,11 +1,13 @@
+
 with Types;
+
 package robot is
 
-      task type Robot_type(Id: Integer) is
-         entry odbior(d : Types.Dostawa);
-         entry naprawa;
-         entry EndRobot;
-         entry DostempDoLadowania;
-      end Robot_type;
+   task type Robot_type(Id : Integer) is
 
-end robot; 
+      entry odbior(d : Types.Dostawa);
+      entry EndRobot;
+
+   end Robot_type;
+
+end robot;

@@ -12,7 +12,7 @@ package Types is
          );
 
    type Dostawa is record
-      
+      Id : Natural := 0;
       DostawaType : Products_Type;
       Ammount : p_ammount;
       Capacity : Integer;

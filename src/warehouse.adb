@@ -17,7 +17,7 @@ package body warehouse is
    Capacity : Integer := 50;
    Space_left : Integer := Capacity;
    selected_type : Types.Products_Type;
-
+   Dostepne: Integer;
 
    procedure print_warehouse_status is
    begin 
@@ -29,6 +29,7 @@ package body warehouse is
       Put_Line ("#####################################################################################################################################################");
 
    end print_warehouse_status;
+
 
    begin
 
@@ -66,6 +67,41 @@ package body warehouse is
                   
 
                end pickup;
+            
+            or
+                  accept Zamow(Numer : Positive; Produkt : Types.Products_Type; Ilosc : Types.p_ammount; Udane : out Boolean) do
+
+                     case Produkt is
+                        when 'A' => Dostepne := warehouse_state_var.A_ammount;
+                        when 'B' => Dostepne := warehouse_state_var.B_ammount;
+                        when 'C' => Dostepne := warehouse_state_var.C_ammount;
+                        when 'D' => Dostepne := warehouse_state_var.D_ammount;
+                     end case;
+
+                     if Dostepne >= Ilosc then
+
+                        case Produkt is
+                           when 'A' =>
+                              warehouse_state_var.A_ammount := warehouse_state_var.A_ammount - Ilosc;
+                              Space_left := Space_left + Ilosc;
+                           when 'B' =>
+                              warehouse_state_var.B_ammount := warehouse_state_var.B_ammount - Ilosc;
+                              Space_left := Space_left + Ilosc * 2;
+                           when 'C' =>
+                              warehouse_state_var.C_ammount := warehouse_state_var.C_ammount - Ilosc;
+                              Space_left := Space_left + Ilosc * 3;
+                           when 'D' =>
+                              warehouse_state_var.D_ammount := warehouse_state_var.D_ammount - Ilosc;
+                              Space_left := Space_left + Ilosc * 4;
+                        end case;
+
+                        Udane := True;
+                     else
+                        Udane := False;
+                     end if;
+
+                  end Zamow;
+
             or
                accept check_warehouse_state(sta : out Integer) do
                   sta := Space_left;

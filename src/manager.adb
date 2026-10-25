@@ -1,93 +1,187 @@
+
 with Ada.Text_IO;
 use Ada.Text_IO;
-with robot;
+
+with Robot;
 with Types;
+with Charger;
+with Warehouse;
+
 use type Types.Robot_Status;
+
 package body manager is
 
+   task body manager is
 
-      task body manager is
-      type robot_access is access robot.Robot_type;
-      type robots_array_type is array (positive range <>) of robot_access;
-      type Robot_Statuses_Array_Type is array (positive range <>) of Types.Robot_Status;
+      type Robot_Access is access Robot.Robot_type;
 
-      robots_array : robots_array_type(1 .. 3);
+      type Robots_Array_Type is
+        array (Positive range <>) of Robot_Access;
 
-      Czy_Wolna_Ladowarka : Boolean := True;
-      akt_dostawa : Types.Dostawa;
-      robot_stats : Robot_Statuses_Array_Type(1 .. 3);
-      Repair_ID : Integer := -1;
-      END_Timer : Integer := -1;
+      type Statuses_Array_Type is
+        array (Positive range <>) of Types.Robot_Status;
+
+      Robots_Array : Robots_Array_Type(1 .. 3);
+      Robot_Stats : Statuses_Array_Type(1 .. 3);
+
+      Akt_Dostawa : Types.Dostawa;
+      Dostawa_Czeka : Boolean := False;
+      Zamykanie : Boolean := False;
+
+      -- Czy wszystkie roboty sa wolne?
+      function Wszystkie_Wolne return Boolean is
       begin
-            for i in robots_array'Range loop
-               robots_array(i) := new robot.Robot_type(Id => i);
-               robot_stats(i) := Types.IDLE;
+         for I in Robot_Stats'Range loop
+            if Robot_Stats(I) /= Types.IDLE then
+               return False;
+            end if;
+         end loop;
+
+         return True;
+      end Wszystkie_Wolne;
+
+   begin
+
+      -- Tworzenie robotow
+      for I in Robots_Array'Range loop
+         Robots_Array(I) :=
+           new Robot.Robot_type(Id => I);
+
+         Robot_Stats(I) := Types.IDLE;
+      end loop;
+
+      loop
+
+         select
+
+            -- Nowe dostawy
+            when not Dostawa_Czeka and not Zamykanie =>
+               accept Nowa_dostawa(D : Types.Dostawa) do
+
+                  Akt_Dostawa := D;
+                  Dostawa_Czeka := True;
+
+                  Put_Line(
+                     "[MANAGER] Dostawa" &
+                     Natural'Image(D.Id) &
+                     " oczekuje na robota"
+                  );
+
+               end Nowa_dostawa;
+
+         or
+
+            -- Aktualizacja statusu robota
+            accept Status(
+               r_status : Types.Robot_Status;
+               Id : Integer
+            ) do
+
+               Robot_Stats(Id) := r_status;
+
+               Put_Line(
+                  "[MANAGER] R" &
+                  Integer'Image(Id) &
+                  " status: " &
+                  Types.Robot_Status'Image(r_status)
+               );
+
+            end Status;
+
+         or
+
+            -- Rozpoczecie zamykania
+            when not Zamykanie =>
+               accept Zakoncz do
+
+                  Zamykanie := True;
+
+                  Put_Line(
+                     "[MANAGER] Rozpoczynam zamykanie"
+                  );
+
+               end Zakoncz;
+
+         or
+
+            delay 0.1;
+
+         end select;
+
+         -- Przydzielanie oczekujacej dostawy
+         if Dostawa_Czeka then
+
+            for I in Robots_Array'Range loop
+
+               if Robot_Stats(I) = Types.IDLE then
+
+                  select
+
+                     Robots_Array(I).odbior(Akt_Dostawa);
+
+                     Robot_Stats(I) :=
+                       Types.TRANSPORTATION;
+
+                     Dostawa_Czeka := False;
+
+                     Put_Line(
+                        "[MANAGER] Przydzielono dostawe" &
+                        Natural'Image(Akt_Dostawa.Id) &
+                        " robotowi R" &
+                        Integer'Image(I)
+                     );
+
+                     exit;
+
+                  else
+                     null;
+                  end select;
+
+               end if;
+
             end loop;
 
-            loop
-               select
-                  accept Nowa_dostawa(D : Types.Dostawa) do
-                     akt_dostawa := D;
-                  end Nowa_dostawa;
-                  if END_Timer < 0 then
-                     for i in robots_array'Range loop
-                        if robot_stats(i) = Types.IDLE then
-                           robots_array(i).odbior (akt_dostawa);
-                           robot_stats(i) := Types.UNLOADING;
-                           exit;
-                        end if;
-                     end loop;
-                  end if;
+         end if;
 
+         -- Koniec dopiero po obsluzeniu dostaw
+         -- i zwolnieniu wszystkich robotow
+         if Zamykanie
+           and then not Dostawa_Czeka
+           and then Wszystkie_Wolne
+         then
+            exit;
+         end if;
 
-               or
-                  accept Status(r_status : Types.Robot_Status; Id : Integer) do
-                     Repair_ID := -1;
-                     robot_stats(Id) := r_status;
-                     if r_status = Types.CRASH then
-                        Repair_ID := Id;
-                     end if;
-                  end Status;
-                  if Repair_ID /= -1 and END_Timer < 0 then
-                     robots_array(Repair_ID).naprawa;
-                  end if;
-               
-               or
-                  accept Wolna_Ladowarka_State (stan : Boolean) do
-                     Czy_Wolna_Ladowarka := stan;
-                  end Wolna_Ladowarka_State;
-               or
-                  accept Zakoncz;
-                     Put_Line ("-----------koniec------------");
-                     END_Timer := 9;
-               end select;
+      end loop;
 
-               for i in robots_array'Range loop
-                  if Czy_Wolna_Ladowarka = True then
-                     if robot_stats(i) = Types.DISCHARGED then
-                        Czy_Wolna_Ladowarka := False;
-                        robots_array(i).DostempDoLadowania;
-                     end if;
-                  end if;
-               end loop;
+      Put_Line(
+         "[MANAGER] Wszystkie transporty zakonczone"
+      );
 
-               if END_Timer > 0 then
-                  delay 0.2;
-                  END_Timer := END_Timer - 1;
-                  Put_Line(Integer'Image(END_Timer));
-               end if;
-               if END_Timer = 0 then
-                  for i in robots_array'Range loop
-                     robots_array(i).EndRobot;
-                  end loop;
-                  Exit;
-               end if;
+      -- Zatrzymanie robotow
+      for I in Robots_Array'Range loop
 
-            end loop;
+         Robots_Array(I).EndRobot;
 
-      end manager;
+         Put_Line(
+            "[MANAGER] Zatrzymano robota R" &
+            Integer'Image(I)
+         );
 
-         
-   --  przyjmowanie samochodow
+      end loop;
+
+      -- Teraz nikt nie korzysta z ladowarki
+      -- ani magazynu
+      Charger.charger.Zakoncz;
+      Warehouse.warehouse.Zakoncz;
+
+      Put_Line(
+         "[MANAGER] Wszystkie zadania zatrzymane"
+      );
+
+      -- Potwierdzenie dla programu glownego
+      accept Gotowe;
+
+   end manager;
 
 end manager;

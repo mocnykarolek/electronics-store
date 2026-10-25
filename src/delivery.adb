@@ -1,74 +1,112 @@
+
 with Ada.Text_IO;
 use Ada.Text_IO;
+
 with Ada.Numerics.Discrete_Random;
+with Ada.Strings;
+with Ada.Strings.Fixed;
+
 with Types;
-use type Types.Products_Type;
-with manager;
+with Unloading;
 
-package body delivery is
-      
+package body Delivery is
 
-      task body delivery is
-         
+   task body Samochod is
 
-         function GenerateRandomProduct return Types.Dostawa is
-            
-            retVal : Types.Dostawa;
-            
-            package RandInt is new Ada.Numerics.Discrete_Random(Types.p_ammount);
-            package RandProd is new Ada.Numerics.Discrete_Random(Types.Products_Type);
+      subtype Random_Time_Range is Integer range 2 .. 4;
 
-            GenInt : RandInt.Generator;
-            GenProd : RandProd.Generator;
+      package Rand_Time is new Ada.Numerics.Discrete_Random
+        (Random_Time_Range);
 
-            
-            
-         begin	
-            
-            RandProd.Reset(GenProd);
-            RandInt.Reset(GenInt);
+      package Rand_Amount is new Ada.Numerics.Discrete_Random
+        (Types.p_ammount);
 
-            retval.DostawaType := RandProd.Random(GenProd);
-            retval.Ammount := RandInt.Random(GenInt);
+      package Rand_Product is new Ada.Numerics.Discrete_Random
+        (Types.Products_Type);
 
-            if retval.DostawaType = 'A' then
-                  retVal.Capacity := 1;
-            elsif retval.DostawaType = 'B' then
-                  retVal.Capacity := 2;
-            elsif retval.DostawaType = 'C' then
-                  retVal.Capacity := 3;
-            elsif retval.DostawaType = 'D' then
-                  retVal.Capacity := 4;
-            end if;
+      Gen_Time    : Rand_Time.Generator;
+      Gen_Amount  : Rand_Amount.Generator;
+      Gen_Product : Rand_Product.Generator;
 
-            return retVal;
-         end GenerateRandomProduct;
+      Towar : Types.Dostawa;
+      Numer_Dostawy : Positive := 1;
 
-         subtype random_time_range is Integer range 2 .. 4;
-         
-         
-         
-         package Losowanie is
-            new Ada.Numerics.Discrete_Random(random_time_range);
-         
-         random_time : random_time_range;
-         Gen : Losowanie.Generator;
-         product : Types.Dostawa;
+      function Napis(N : Integer) return String is
       begin
-         Losowanie.Reset(Gen);
+         return Ada.Strings.Fixed.Trim
+           (Integer'Image(N), Ada.Strings.Both);
+      end Napis;
+
+   begin
+
+      Rand_Time.Reset(Gen_Time);
+      Rand_Amount.Reset(Gen_Amount);
+      Rand_Product.Reset(Gen_Product);
+
+      loop
+         select
+            accept Zakoncz do
+                  Put_Line( "[SAMOCHOD D" & Napis(Numer) & "] Konczy prace");
+            end Zakoncz;
+            exit;
+
+         or
+         -- Losowy czas do kolejnego przyjazdu
+         delay Duration(Rand_Time.Random(Gen_Time));
+
+         end select;
+         -- Losowanie towaru
+         Towar.DostawaType :=
+           Rand_Product.Random(Gen_Product);
+
+         Towar.Ammount :=
+           Rand_Amount.Random(Gen_Amount);
+
+         -- Okreslenie zajmowanego miejsca
+         case Towar.DostawaType is
+            when 'A' => Towar.Capacity := 1;
+            when 'B' => Towar.Capacity := 2;
+            when 'C' => Towar.Capacity := 3;
+            when 'D' => Towar.Capacity := 4;
+         end case;
+
+         -- Unikalny identyfikator dostawy
+         Towar.Id := 3 * (Numer_Dostawy - 1) + Numer;
+         Numer_Dostawy := Numer_Dostawy + 1;
+
+         Put_Line(
+            "[SAMOCHOD D" & Napis(Numer) &"] Przyjazd dostawy nr " & Napis(Towar.Id) &" | Produkt: " &Types.Products_Type'Image(Towar.DostawaType) & " | Ilosc: " & Napis(Towar.Ammount)
+         );
+
+         Put_Line("[SAMOCHOD D" & Napis(Numer) &"] Oczekuje na rozladunek");
+
+         -- Samochod czeka na stanowisko
          loop
-            random_time := Losowanie.Random(Gen);
-            product := GenerateRandomProduct;
-            Put_Line ("Dostawa czeka");
-            manager.manager.Nowa_dostawa (product);
-            --  pyta managera o wolnego robota
-            --  jezeli nie znajdzie to wtedy jest to komunikowane i produkt jest gubiony
-            delay Duration(random_time);
+            select
 
+               -- Stanowisko przyjelo samochod
+               Unloading.Stanowisko.Rozladuj(Towar);
 
+               exit;
+
+            or
+
+               -- Stanowisko nie przyjelo samochodu
+               -- w ciagu 1 sekundy
+               delay 1.0;
+
+               Put_Line(
+                  "[SAMOCHOD D" & Napis(Numer) &
+                  "] Stanowisko zajete - nadal oczekuje"
+               );
+
+            end select;
          end loop;
-         
 
-      end delivery;
+         Put_Line("[SAMOCHOD D" & Napis(Numer) &"] Rozladowany, odjezdza");
 
-end delivery;
+      end loop;
+
+   end Samochod;
+
+end Delivery;

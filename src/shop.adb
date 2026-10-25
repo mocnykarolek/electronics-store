@@ -1,17 +1,10 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
 
-with manager;
-with tools;
-use tools;
-with robot;
-use robot;
-with delivery;
-use delivery;
-with warehouse;
-with Types;
-
-
+with Delivery;
+with Unloading;
+with Manager;
+with Klient;
 
 procedure Shop is
    
@@ -20,10 +13,17 @@ procedure Shop is
 
 begin
    
-   delay 30.0;
+   delay 10.0;
+   Delivery.D1.Zakoncz;
+   Delivery.D2.Zakoncz;
+   Delivery.D3.Zakoncz;
+
+   Unloading.Stanowisko.Zakoncz;
+
+   Klient.Klient.Zakoncz;
 
    manager.manager.Zakoncz;
-
+   Manager.Manager.Gotowe;
 
    
 end Shop;
