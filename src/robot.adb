@@ -11,7 +11,7 @@ package body robot is
       current_product : Types.Dostawa;
       current_robot_status : Types.Robot_Status := Types.IDLE;
       warehouse_return_code : Integer;
-      subtype random_crash_chance is Integer range 1 .. 7;
+      subtype random_crash_chance is Integer range 1 .. 5;
       package Losowanie is new Ada.Numerics.Discrete_Random(random_crash_chance);
       Gen : Losowanie.Generator;
       x : random_crash_chance;
@@ -26,7 +26,6 @@ package body robot is
                   current_robot_status := Types.UNLOADING;
                   Put_Line ("[R" & Integer'Image(Id) & "] Odbiera produkt przez 1 sec");
                end odbior;
-               manager.manager.Status (current_robot_status, Id);
                delay 1.0;
                Put_Line ("[R" & Integer'Image(Id) & "] transportuje do magazynu");
                delay 2.0;
@@ -41,14 +40,14 @@ package body robot is
                   Put_Line ("[R" & Integer'Image(Id) & "] ulegl awarii");
                   current_robot_status := Types.CRASH;
                end if;
-               Flaga_Statusu := True;
+               manager.manager.Status (current_robot_status, Id);
          or
             when current_robot_status = Types.CRASH =>
                accept naprawa do
                   current_robot_status := Types.IDLE;
                end naprawa;
-               manager.manager.Status (current_robot_status, Id);
                delay 5.0;
+               manager.manager.Status(current_robot_status, Id);
                Put_Line ("[R" & Integer'Image(Id) & "] zostal naprawiony");
          or
             delay 1.0;
@@ -59,10 +58,6 @@ package body robot is
             end EndRobot;
             exit;
          end select;
-         if Flaga_Statusu = True then
-            manager.manager.Status (current_robot_status, Id);
-            Flaga_Statusu := False;
-         end if;
       end loop;
    end Robot_type;
 

@@ -16,6 +16,7 @@ package body manager is
       akt_dostawa : Types.Dostawa;
       robot_stats : Robot_Statuses_Array_Type(1 .. 3);
       Repair_ID : Integer := -1;
+      END_Timer : Integer := -1;
       begin
             for i in robots_array'Range loop
                robots_array(i) := new robot.Robot_type(Id => i);
@@ -27,13 +28,16 @@ package body manager is
                   accept Nowa_dostawa(D : Types.Dostawa) do
                      akt_dostawa := D;
                   end Nowa_dostawa;
-                  for i in robots_array'Range loop
-                     if robot_stats(i) = Types.IDLE then
-                        robots_array(i).odbior (akt_dostawa);
-                        exit;
-                     end if;
-                     
-                  end loop;
+                  if END_Timer < 0 then
+                     Put_Line ("tak;;;;;;;;;;;;;;;;");
+                     for i in robots_array'Range loop
+                        if robot_stats(i) = Types.IDLE then
+                           robots_array(i).odbior (akt_dostawa);
+                           robot_stats(i) := Types.UNLOADING;
+                           exit;
+                        end if;
+                     end loop;
+                  end if;
 
 
                or
@@ -44,22 +48,27 @@ package body manager is
                         Repair_ID := Id;
                      end if;
                   end Status;
-                  if Repair_ID /= -1 then
+                  if Repair_ID /= -1 and END_Timer < 0 then
+                     Put_Line ("tak;;;;;;;;;;;;;;;;");
                      robots_array(Repair_ID).naprawa;
                   end if;
 
                or
                   accept Zakoncz;
-                  Put_Line ("koniec");
+                     Put_Line ("-----------koniec------------");
+                     END_Timer := 10;
+               end select;
+               if END_Timer > 0 then
+                  delay 0.2;
+                  END_Timer := END_Timer - 1;
+                  Put_Line(Integer'Image(END_Timer));
+               end if;
+               if END_Timer = 0 then
                   for i in robots_array'Range loop
                      robots_array(i).EndRobot;
                   end loop;
                   Exit;
-
-
-
-
-               end select;
+               end if;
             end loop;
 
       end manager;
