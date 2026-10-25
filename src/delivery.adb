@@ -70,7 +70,7 @@ package body Delivery is
             when 'D' => Towar.Capacity := 4;
          end case;
 
-         -- Unikalny identyfikator dostawy
+         -- randomowe id towaru
          Towar.Id := 3 * (Numer_Dostawy - 1) + Numer;
          Numer_Dostawy := Numer_Dostawy + 1;
 

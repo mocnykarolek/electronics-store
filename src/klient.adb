@@ -36,9 +36,7 @@ package body Klient is
          Produkt := Losuj_Produkt.Random(Gen_Produkt);
          Ilosc := Losuj_Ilosc.Random(Gen_Ilosc);
 
-         Put_Line("[KLIENT] Zamowienie nr" & Integer'Image(Numer) &
-                  " produkt " & Types.Nazwa_Produktu(Produkt) &
-                  " ilosc" & Integer'Image(Ilosc));
+         Put_Line("[KLIENT] Zamowienie nr" & Integer'Image(Numer) &  " produkt " & Types.Nazwa_Produktu(Produkt) & " ilosc" & Integer'Image(Ilosc));
 
          Warehouse.Warehouse.Zamow(Numer, Produkt, Ilosc, Udane);
 

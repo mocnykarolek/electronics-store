@@ -16,17 +16,11 @@ package body Unloading is
 
             accept Rozladuj(D : in Types.Dostawa) do
 
-               Put_Line(
-                  "[ROZLADUNEK] Rozpoczeto D" &
-                  Natural'Image(D.Id)
-               );
+               Put_Line("[ROZLADUNEK] Rozpoczeto D" &Natural'Image(D.Id));
 
                delay 0.5 + Duration(D.Ammount) * 0.4;
 
-               Put_Line(
-                  "[ROZLADUNEK] Zakonczono D" &
-                  Natural'Image(D.Id)
-               );
+               Put_Line("[ROZLADUNEK] Zakonczono D" & Natural'Image(D.Id));
 
                Towar := D;
 

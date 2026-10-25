@@ -61,30 +61,18 @@ package body manager is
                   Akt_Dostawa := D;
                   Dostawa_Czeka := True;
 
-                  Put_Line(
-                     "[MANAGER] Dostawa" &
-                     Natural'Image(D.Id) &
-                     " oczekuje na robota"
-                  );
+                  Put_Line(  "[MANAGER] Dostawa" & Natural'Image(D.Id) & " oczekuje na robota" );
 
                end Nowa_dostawa;
 
          or
 
             -- Aktualizacja statusu robota
-            accept Status(
-               r_status : Types.Robot_Status;
-               Id : Integer
-            ) do
+            accept Status( r_status : Types.Robot_Status; Id : Integer  ) do
 
                Robot_Stats(Id) := r_status;
 
-               Put_Line(
-                  "[MANAGER] R" &
-                  Integer'Image(Id) &
-                  " status: " &
-                  Types.Robot_Status'Image(r_status)
-               );
+               Put_Line( "[MANAGER] R" & Integer'Image(Id) & " status: " & Types.Robot_Status'Image(r_status) );
 
             end Status;
 
@@ -96,9 +84,7 @@ package body manager is
 
                   Zamykanie := True;
 
-                  Put_Line(
-                     "[MANAGER] Rozpoczynam zamykanie"
-                  );
+                  Put_Line( "[MANAGER] Rozpoczynam zamykanie");
 
                end Zakoncz;
 
@@ -124,12 +110,7 @@ package body manager is
 
                      Dostawa_Czeka := False;
 
-                     Put_Line(
-                        "[MANAGER] Przydzielono dostawe" &
-                        Natural'Image(Akt_Dostawa.Id) &
-                        " robotowi R" &
-                        Integer'Image(I)
-                     );
+                     Put_Line(  "[MANAGER] Przydzielono dostawe" &   Natural'Image(Akt_Dostawa.Id) &  " robotowi R" & Integer'Image(I) );
 
                      exit;
 

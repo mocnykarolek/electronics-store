@@ -12,28 +12,18 @@ package body charger is
 
             accept Ladowanie(ID : Integer) do
 
-               Put_Line(
-                  "[LADOWARKA] Robot R" &
-                  Integer'Image(ID) &
-                  " rozpoczal ladowanie"
-               );
+               Put_Line( "[LADOWARKA] Robot R" & Integer'Image(ID) & " rozpoczal ladowanie");
 
                delay 5.0;
 
-               Put_Line(
-                  "[LADOWARKA] Robot R" &
-                  Integer'Image(ID) &
-                  " zakonczyl ladowanie"
-               );
+               Put_Line( "[LADOWARKA] Robot R" & Integer'Image(ID) & " zakonczyl ladowanie");
 
             end Ladowanie;
 
          or
 
             accept Zakoncz do
-               Put_Line(
-                  "[LADOWARKA] Koniec pracy"
-               );
+               Put_Line(  "[LADOWARKA] Koniec pracy" );
             end Zakoncz;
 
             exit;
