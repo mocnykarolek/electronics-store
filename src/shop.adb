@@ -20,7 +20,7 @@ procedure Shop is
 
 begin
    
-   delay 20.0;
+   delay 30.0;
 
    manager.manager.Zakoncz;
 

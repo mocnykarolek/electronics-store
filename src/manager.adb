@@ -13,6 +13,7 @@ package body manager is
 
       robots_array : robots_array_type(1 .. 3);
 
+      Czy_Wolna_Ladowarka : Boolean := True;
       akt_dostawa : Types.Dostawa;
       robot_stats : Robot_Statuses_Array_Type(1 .. 3);
       Repair_ID : Integer := -1;
@@ -29,7 +30,6 @@ package body manager is
                      akt_dostawa := D;
                   end Nowa_dostawa;
                   if END_Timer < 0 then
-                     Put_Line ("tak;;;;;;;;;;;;;;;;");
                      for i in robots_array'Range loop
                         if robot_stats(i) = Types.IDLE then
                            robots_array(i).odbior (akt_dostawa);
@@ -49,15 +49,28 @@ package body manager is
                      end if;
                   end Status;
                   if Repair_ID /= -1 and END_Timer < 0 then
-                     Put_Line ("tak;;;;;;;;;;;;;;;;");
                      robots_array(Repair_ID).naprawa;
                   end if;
-
+               
+               or
+                  accept Wolna_Ladowarka_State (stan : Boolean) do
+                     Czy_Wolna_Ladowarka := stan;
+                  end Wolna_Ladowarka_State;
                or
                   accept Zakoncz;
                      Put_Line ("-----------koniec------------");
-                     END_Timer := 10;
+                     END_Timer := 9;
                end select;
+
+               for i in robots_array'Range loop
+                  if Czy_Wolna_Ladowarka = True then
+                     if robot_stats(i) = Types.DISCHARGED then
+                        Czy_Wolna_Ladowarka := False;
+                        robots_array(i).DostempDoLadowania;
+                     end if;
+                  end if;
+               end loop;
+
                if END_Timer > 0 then
                   delay 0.2;
                   END_Timer := END_Timer - 1;
@@ -69,6 +82,7 @@ package body manager is
                   end loop;
                   Exit;
                end if;
+
             end loop;
 
       end manager;

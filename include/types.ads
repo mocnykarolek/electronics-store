@@ -7,7 +7,8 @@ package Types is
             IDLE,
             CRASH,
             TRANSPORTATION,
-            UNLOADING
+            UNLOADING,
+            DISCHARGED
          );
 
    type Dostawa is record
