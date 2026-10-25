@@ -13,7 +13,7 @@ procedure Shop is
 
 begin
    
-   delay 10.0;
+   delay 15.0;
    Delivery.D1.Zakoncz;
    Delivery.D2.Zakoncz;
    Delivery.D3.Zakoncz;

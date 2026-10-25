@@ -75,7 +75,7 @@ package body Delivery is
          Numer_Dostawy := Numer_Dostawy + 1;
 
          Put_Line(
-            "[SAMOCHOD D" & Napis(Numer) &"] Przyjazd dostawy nr " & Napis(Towar.Id) &" | Produkt: " &Types.Products_Type'Image(Towar.DostawaType) & " | Ilosc: " & Napis(Towar.Ammount)
+            "[SAMOCHOD D" & Napis(Numer) &"] Przyjazd dostawy nr " & Napis(Towar.Id) &" | Produkt: " & Types.Nazwa_Produktu(Towar.DostawaType) & " | Ilosc: " & Napis(Towar.Ammount)
          );
 
          Put_Line("[SAMOCHOD D" & Napis(Numer) &"] Oczekuje na rozladunek");

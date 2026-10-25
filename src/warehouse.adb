@@ -22,10 +22,10 @@ package body warehouse is
    procedure print_warehouse_status is
    begin 
       Put_Line ("#####################################################################################################################################################");
-      Put_Line (" Produktow A jest : " & Integer'Image(warehouse_state_var.A_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.A_ammount*1) & " miejsca.");
-      Put_Line (" Produktow B jest : " & Integer'Image(warehouse_state_var.B_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.B_ammount*2) & " miejsca.");
-      Put_Line (" Produktow C jest : " & Integer'Image(warehouse_state_var.C_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.C_ammount*3) & " miejsca.");
-      Put_Line (" Produktow D jest : " & Integer'Image(warehouse_state_var.D_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.D_ammount*4) & " miejsca.");
+      Put_Line (" Produktow Ladowarki jest : " & Integer'Image(warehouse_state_var.A_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.A_ammount*1) & " miejsca.");
+      Put_Line (" Produktow Telefony jest : " & Integer'Image(warehouse_state_var.B_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.B_ammount*2) & " miejsca.");
+      Put_Line (" Produktow Komputery jest : " & Integer'Image(warehouse_state_var.C_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.C_ammount*3) & " miejsca.");
+      Put_Line (" Produktow Lodowki jest : " & Integer'Image(warehouse_state_var.D_ammount) & " i zajmuja " & Integer'Image(warehouse_state_var.D_ammount*4) & " miejsca.");
       Put_Line ("#####################################################################################################################################################");
 
    end print_warehouse_status;
@@ -55,7 +55,7 @@ package body warehouse is
                      end if;
                      Space_left := Space_left - dostawa.Ammount*dostawa.Capacity;
 
-                     Put_Line ("Przyjeto: " & Integer'Image(dostawa.Ammount) & " produktow typu" & Types.Products_Type'Image(selected_type) & ". W magazynie zostalo : " & Integer'Image(Space_left) & " miejsca.");
+                     Put_Line ("Przyjeto: " & Integer'Image(dostawa.Ammount) & " produktow typu" & Types.Nazwa_Produktu(selected_type) & ". W magazynie zostalo : " & Integer'Image(Space_left) & " miejsca.");
                      retCode := 0;
                   else
                      Put_Line("Brak miejsca na magazynie. ZWROT");
